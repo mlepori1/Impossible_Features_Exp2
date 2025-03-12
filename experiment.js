@@ -7,8 +7,8 @@ var jsPsych = initJsPsych({
   show_progress_bar: true,
   auto_update_progress_bar: false,
   on_finish: function() {
-    jsPsych.data.displayData();
-    // saveData();
+    //jsPsych.data.displayData();
+    saveData();
   }
 });
 
@@ -32,7 +32,7 @@ jsPsych.data.addProperties({
  * GLOBAL VARIABLES 
 **************************************************************************/
 
-var DEBUG = false; // CHANGE TO FALSE FOR REAL EXPERIMENT
+var DEBUG = true; // CHANGE TO FALSE FOR REAL EXPERIMENT
 var REQUIRE_QUESTIONS = !DEBUG; 
 
 var STIM_COUNT = 20;
