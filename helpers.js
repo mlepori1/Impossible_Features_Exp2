@@ -7,7 +7,7 @@ function saveData() {
     $.ajax({
         type: "POST",
         url: "https://mlepori.pythonanywhere.com/save-json",
-        data: JSON.stringify({ 'prolific_data': jsPsych.data.dataProperties, 'data': full_data, 'dir_path': "data" }),
+        data: JSON.stringify({ 'prolific_data': jsPsych.data.dataProperties, 'data': full_data, 'dir_path': "data/experiment_2_pilot" }),
         contentType: "application/json"
     })
         .done(function () {

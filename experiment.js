@@ -32,7 +32,7 @@ jsPsych.data.addProperties({
  * GLOBAL VARIABLES 
 **************************************************************************/
 
-var DEBUG = true; // CHANGE TO FALSE FOR REAL EXPERIMENT
+var DEBUG = false; // CHANGE TO FALSE FOR REAL EXPERIMENT
 var REQUIRE_QUESTIONS = !DEBUG; 
 
 var STIM_COUNT = 20;
