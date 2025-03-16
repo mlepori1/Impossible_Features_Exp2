@@ -50,8 +50,8 @@ stimuli = jsPsych.randomization.sampleWithoutReplacement(stimuli, STIM_COUNT + T
 var train_stimuli = stimuli.slice(0, TRAIN_COUNT)
 var test_stimuli = stimuli.slice(TRAIN_COUNT, TRAIN_COUNT + STIM_COUNT)
 
-// Repeat test stimuli three times
-test_stimuli = test_stimuli.concat(test_stimuli, test_stimuli);
+// Present test stimuli 3 times in a row, one for each concept
+test_stimuli = repeatElements(test_stimuli, 3);
 var n_trials = test_stimuli.length + ATTN_COUNT; 
 
 // For deciding when to deploy attention checks
@@ -70,6 +70,21 @@ PROMPT_TYPE_MAP.set("improbable", "improbable")
 PROMPT_TYPE_MAP.set("impossible", "impossible")
 PROMPT_TYPE_MAP.set("inconceivable", "nonsensical")
 
+const REMINDER_MAP = new Map()
+REMINDER_MAP.set("improbable", 
+  `<p>
+    Reminder: <strong>Improbable</strong> means it is possible, but unlikely (e.g., "I painted the house with my hair.").
+  <p>`)
+
+REMINDER_MAP.set("impossible",
+  `<p>
+  Reminder: <strong>Impossible</strong> means it cannot happen in our world given the laws of nature (e.g., "I painted the house with my mind."). 
+  <p>`)
+REMINDER_MAP.set("inconceivable",
+  `<p>
+    Reminder: <strong>Nonsensical</strong> means it does not make sense due to some basic conceptual error ("I painted the house with my number."). 
+    <p>`)
+
 var PROMPT_TYPE = ["improbable", "impossible", "inconceivable"]
 
 
@@ -82,9 +97,19 @@ var CUR_QUERY = "";
  * HELPER FUNCTIONS
 **************************************************************************/
 
+function repeatElements(arr, times) {
+  var l = arr.flatMap(num => Array(times).fill(num));
+  return l
+}
 
-function get_stimulus(verb, object, prep, continuation, condition) {
-  var task = "Rate the following phrase according to how <b>" + condition + "</b> it is:<BR/><BR/>\""
+function repeatArray(arr, times){
+  var l = [].concat(...Array(times).fill(arr));
+  return l
+}
+
+
+function get_stimulus(verb, object, prep, continuation, condition, reminder) {
+  var task = "Rate the following phrase according to how <b>" + condition + "</b> it is." + reminder + "<BR/><BR/>\""
   var s = task + verb + " " + object + " " + prep + " " + continuation + "\""
   s = s.replace("[POSS]", "their")
   return s
@@ -121,16 +146,16 @@ function shuffle_together(l1, l2, l3) {
 var S_COND_ORDER_TRAIN= get_s_condition_order(TRAIN_COUNT);
 
 var S_COND_ORDER = get_s_condition_order(STIM_COUNT);
-S_COND_ORDER = S_COND_ORDER.concat(S_COND_ORDER, S_COND_ORDER);
+S_COND_ORDER = jsPsych.randomization.sampleWithoutReplacement(S_COND_ORDER, STIM_COUNT);
+S_COND_ORDER = repeatElements(S_COND_ORDER, 3);
 
 // Generate question condition order for train and test
 var Q_COND_ORDER_TRAIN = get_q_condition_order(1);
 Q_COND_ORDER_TRAIN = Q_COND_ORDER_TRAIN.concat(Q_COND_ORDER_TRAIN).slice(0, TRAIN_COUNT)
 
-var Q_COND_ORDER = get_q_condition_order(STIM_COUNT);
-
-// Shuffle Test Stimuli together
-[test_stimuli, S_COND_ORDER, Q_COND_ORDER] = shuffle_together(test_stimuli, S_COND_ORDER, Q_COND_ORDER);
+// Repeat [improbable, impossible, inconceivable] in that order over and over
+var Q_COND_ORDER = get_q_condition_order(1);
+Q_COND_ORDER = repeatArray(Q_COND_ORDER, STIM_COUNT)
 
 /**************************************************************************
  * EXPERIMENT CODE
@@ -150,6 +175,13 @@ var instructions = {
     <br><br>
     The questions are all about rating how improbable, impossible, or nonsensical particular scenarios are.
     <br>
+    <p>
+    <strong>Improbable</strong> means it is possible, but unlikely (e.g., "I painted the house with my hair."). 
+    <p>
+    <strong>Impossible</strong> means it cannot happen in our world given the laws of nature (e.g., "I painted the house with my mind."). 
+    <p>
+    <strong>Nonsensical</strong> means it does not make sense due to some basic conceptual error (e.g., "I painted the house with my number."). 
+    <p>
     <h3>Your task:</h3>
     <ul>
       <li>Read each question carefully.</li>
@@ -159,10 +191,9 @@ var instructions = {
     </ul>
     <h3>IMPORTANT:</h3>
     <ul>
+      <li><strong>Please use the entire slider when responding.</strong></li>
       <li>Answer the questions based on what is possible given the physical laws of the real world.</li>
-      <li>Some questions might sound weird or nonsensical. Just answer the best you can.</li>
       <li>There are no right or wrong answers. We are simply interested in your intuitions.</li>
-      <li>Remember to respond quickly!</li>
     </ul>
     <br>
     Once you are ready, click the button below to begin the first phase of the study.
@@ -192,6 +223,7 @@ var train_trial = {
       jsPsych.timelineVariable("prep"),
       jsPsych.timelineVariable(CUR_CONDITION),
       PROMPT_TYPE_MAP.get(CUR_PROMPT),
+      REMINDER_MAP.get(CUR_PROMPT),
 
     );
     var html = `<div style="font-size:20px;"><p>${CUR_QUERY}</p></div>`;
@@ -203,7 +235,7 @@ var train_trial = {
   max: 100,
   // step: 1,
   labels: function() {
-    return ["Normal", `More ${PROMPT_TYPE_MAP.get(CUR_PROMPT)} &#8594`, ""]
+    return ["", `More ${PROMPT_TYPE_MAP.get(CUR_PROMPT)} &#8594`, ""]
   },
   slider_start: 50,
   slider_width: 400
@@ -247,16 +279,15 @@ var ready = {
     <h3>Your task:</h3>
     <ul>
       <li>Read each question carefully.</li>
-      <li>Answer how improbable, impossible, or nonsensical the sentence is, unless instructed to do otherwise.</li>
+      <li>Answer how improbable, impossible, or nonsensical the sentence is.</li>
       <li>You will answer most questions using a slider. Answer the remaining questions by clicking on your choice.</li>
       <li>Respond as quickly as you can.</li>
     </ul>
     <h3>IMPORTANT:</h3>
     <ul>
+      <li><strong>Please use the entire slider when responding.</strong></li>
       <li>Answer the questions based on what is possible given the physical laws of the real world.</li>
-      <li>Some questions might sound weird or nonsensical. Just answer the best you can.</li>
       <li>There are no right or wrong answers. We are simply interested in your intuitions.</li>
-      <li>Remember to respond quickly!</li>
     </ul>
     <br>
     Once you are ready, click the button below to begin the second phase of the study.
@@ -291,6 +322,7 @@ var trial = {
       jsPsych.timelineVariable("prep"),
       jsPsych.timelineVariable(CUR_CONDITION),
       PROMPT_TYPE_MAP.get(CUR_PROMPT),
+      REMINDER_MAP.get(CUR_PROMPT)
 
     );
     var html = `<div style="font-size:20px;"><p>${CUR_QUERY}</p></div>`;
@@ -302,7 +334,7 @@ var trial = {
   max: 100,
   // step: 1,
   labels: function() {
-    return ["Normal", `More ${PROMPT_TYPE_MAP.get(CUR_PROMPT)} &#8594`, ""]
+    return ["", `More ${PROMPT_TYPE_MAP.get(CUR_PROMPT)} &#8594`, ""]
   },
   slider_start: 50,
   slider_width: 400
