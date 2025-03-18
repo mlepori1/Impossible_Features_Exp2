@@ -68,7 +68,7 @@ var CONDITIONS = [
 const PROMPT_TYPE_MAP = new Map() 
 PROMPT_TYPE_MAP.set("improbable", "improbable")
 PROMPT_TYPE_MAP.set("impossible", "impossible")
-PROMPT_TYPE_MAP.set("inconceivable", "nonsensical")
+PROMPT_TYPE_MAP.set("inconceivable", "incomprehensible")
 
 const REMINDER_MAP = new Map()
 REMINDER_MAP.set("improbable", 
@@ -82,7 +82,7 @@ REMINDER_MAP.set("impossible",
   <p>`)
 REMINDER_MAP.set("inconceivable",
   `<p>
-    Reminder: <strong>Nonsensical</strong> means it does not make sense due to some basic conceptual error ("I painted the house with my number."). 
+    Reminder: <strong>Incomprehensible</strong> means it does not make sense due to some basic conceptual error ("I painted the house with my number."). 
     <p>`)
 
 var PROMPT_TYPE = ["improbable", "impossible", "inconceivable"]
@@ -173,19 +173,19 @@ var instructions = {
     This study will consist of two short phases. First, we will ask you ${TRAIN_COUNT} simple questions to familiarize
     you with the task. Next, we will ask you ${n_trials} similar questions.
     <br><br>
-    The questions are all about rating how improbable, impossible, or nonsensical particular scenarios are.
+    The questions are all about rating how improbable, impossible, or incomprehensible particular scenarios are.
     <br>
     <p>
     <strong>Improbable</strong> means it is possible, but unlikely (e.g., "I painted the house with my hair."). 
     <p>
     <strong>Impossible</strong> means it cannot happen in our world given the laws of nature (e.g., "I painted the house with my mind."). 
     <p>
-    <strong>Nonsensical</strong> means it does not make sense due to some basic conceptual error (e.g., "I painted the house with my number."). 
+    <strong>Incomprehensible</strong> means it does not make sense due to some basic conceptual error (e.g., "I painted the house with my number."). 
     <p>
     <h3>Your task:</h3>
     <ul>
       <li>Read each question carefully.</li>
-      <li>Answer how improbable, impossible, or nonsensical the sentence is.</li>
+      <li>Answer how improbable, impossible, or incomprehensible the sentence is.</li>
       <li>You will answer using a slider.</li>
       <li>Respond as quickly as you can.</li>
     </ul>
@@ -274,12 +274,12 @@ var ready = {
     <br>
     <h3>REMINDER:</h3>
     <br>
-    The questions are all about rating how improbable, impossible, or nonsensical particular scenarios are.
+    The questions are all about rating how improbable, impossible, or incomprehensible particular scenarios are.
     <br>
     <h3>Your task:</h3>
     <ul>
       <li>Read each question carefully.</li>
-      <li>Answer how improbable, impossible, or nonsensical the sentence is.</li>
+      <li>Answer how improbable, impossible, or incomprehensible the sentence is.</li>
       <li>You will answer most questions using a slider. Answer the remaining questions by clicking on your choice.</li>
       <li>Respond as quickly as you can.</li>
     </ul>
@@ -368,7 +368,7 @@ var optional_attention_check = {
   choices: [
     "Rate the phrase according to how <b>improbable</b> it is",
     "Rate the phrase according to how <b>impossible</b> it is",
-    "Rate the phrase according to how <b>nonsensical</b> it is",
+    "Rate the phrase according to how <b>incomprehensible</b> it is",
   ]
 };
 optional_attention_check.on_start = function(optional_attention_check){
@@ -378,7 +378,7 @@ optional_attention_check.on_start = function(optional_attention_check){
   optional_attention_check.data.choices = [
     "Rate the phrase according to how <b>improbable</b> it is",
     "Rate the phrase according to how <b>impossible</b> it is",
-    "Rate the phrase according to how <b>nonsensical</b> it is",
+    "Rate the phrase according to how <b>incomprehensible</b> it is",
   ];
 
 
