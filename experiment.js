@@ -35,10 +35,8 @@ jsPsych.data.addProperties({
 var DEBUG = false; // CHANGE TO FALSE FOR REAL EXPERIMENT
 var REQUIRE_QUESTIONS = !DEBUG; 
 
-var STIM_COUNT = 20;
+var STIM_COUNT = 60;
 var TRAIN_COUNT = 4;
-var ATTN_COUNT = 4;
-
 
 // Get stimuli according to list ID.
 var stimuli = test_stimuli; // test_stimuli is read from prefixes_stimuli.js
@@ -50,15 +48,7 @@ stimuli = jsPsych.randomization.sampleWithoutReplacement(stimuli, STIM_COUNT + T
 var train_stimuli = stimuli.slice(0, TRAIN_COUNT)
 var test_stimuli = stimuli.slice(TRAIN_COUNT, TRAIN_COUNT + STIM_COUNT)
 
-// Present test stimuli 3 times in a row, one for each concept
-test_stimuli = repeatElements(test_stimuli, 3);
-var n_trials = test_stimuli.length + ATTN_COUNT; 
-
-// For deciding when to deploy attention checks
-var n_exp_trials = test_stimuli.length;
-var exp_trial_progress = 0.0;
-var ATTN_INCREMENT = 1 / ATTN_COUNT;
-var ATTN_THRESHOLD = ATTN_INCREMENT;
+var n_trials = test_stimuli.length; 
 
 // Conditions.
 var CONDITIONS = [
@@ -72,21 +62,16 @@ PROMPT_TYPE_MAP.set("inconceivable", "nonsensical")
 
 const REMINDER_MAP = new Map()
 REMINDER_MAP.set("improbable", 
-  `<p>
-    Reminder: <strong>Improbable</strong> means it is possible, but unlikely (e.g., "I painted the house with my hair.").
-  <p>`)
+  `<strong>Improbable</strong> means it is possible, but unlikely (e.g., "I painted the house with my hair.").`)
 
 REMINDER_MAP.set("impossible",
-  `<p>
-  Reminder: <strong>Impossible</strong> means it cannot happen in our world given the laws of nature (e.g., "I painted the house with my mind."). 
-  <p>`)
+  `<strong>Impossible</strong> means it cannot happen in our world given the laws of nature (e.g., "I painted the house with my mind."). `)
 REMINDER_MAP.set("inconceivable",
-  `<p>
-    Reminder: <strong>Nonsensical</strong> means it does not make sense due to some basic conceptual error ("I painted the house with my number."). 
-    <p>`)
+  `<strong>Nonsensical</strong> means it does not make sense due to some basic conceptual error ("I painted the house with my number."). `)
 
+// Randomly Select Prompt Type, then keep it fixed 
 var PROMPT_TYPE = ["improbable", "impossible", "inconceivable"]
-
+PROMPT_TYPE= jsPsych.randomization.sampleWithoutReplacement(PROMPT_TYPE, 1)
 
 // These variables will be updated on each trial.
 var CUR_CONDITION = "";
@@ -109,7 +94,7 @@ function repeatArray(arr, times){
 
 
 function get_stimulus(verb, object, prep, continuation, condition, reminder) {
-  var task = "Rate the following phrase according to how <b>" + condition + "</b> it is." + reminder + "<BR/><BR/>\""
+  var task = "Rate the following phrase according to how <b>" + condition + "</b> it is. <p>Reminder:" + reminder + "</p><BR/><BR/>\""
   var s = task + verb + " " + object + " " + prep + " " + continuation + "\""
   s = s.replace("[POSS]", "their")
   return s
@@ -123,39 +108,26 @@ function get_s_condition_order(COUNT) {
   return s
 }
 
-function get_q_condition_order(COUNT) {
+function get_q_condition(COUNT) {
   // Generate a list of COUNT instances of each q_condition
   var q = [];
   PROMPT_TYPE.forEach((cond) => q = q.concat(Array(COUNT).fill(cond)))
   return q
 }
 
-function shuffle_together(l1, l2, l3) {
-  // There are STIM_COUNT * 3 stimuli
-  var index = Array.from(Array(l1.length).keys())
-  index = jsPsych.randomization.shuffle(index)
 
-  l1 = index.map(i => l1[i]);
-  l2 = index.map(i => l2[i]);
-  l3 = index.map(i => l3[i]);
-
-  return [l1, l2, l3];
-}
 // Generate train stimulus condition order and 
 // test stimulus condition order repeated three times
 var S_COND_ORDER_TRAIN= get_s_condition_order(TRAIN_COUNT);
 
 var S_COND_ORDER = get_s_condition_order(STIM_COUNT);
 S_COND_ORDER = jsPsych.randomization.sampleWithoutReplacement(S_COND_ORDER, STIM_COUNT);
-S_COND_ORDER = repeatElements(S_COND_ORDER, 3);
 
 // Generate question condition order for train and test
-var Q_COND_ORDER_TRAIN = get_q_condition_order(1);
-Q_COND_ORDER_TRAIN = Q_COND_ORDER_TRAIN.concat(Q_COND_ORDER_TRAIN).slice(0, TRAIN_COUNT)
+var Q_COND_ORDER_TRAIN = get_q_condition_order(TRAIN_COUNT);
 
 // Repeat [improbable, impossible, inconceivable] in that order over and over
-var Q_COND_ORDER = get_q_condition_order(1);
-Q_COND_ORDER = repeatArray(Q_COND_ORDER, STIM_COUNT)
+var Q_COND_ORDER = get_q_condition_order(STIM_COUNT);
 
 /**************************************************************************
  * EXPERIMENT CODE
@@ -173,19 +145,15 @@ var instructions = {
     This study will consist of two short phases. First, we will ask you ${TRAIN_COUNT} simple questions to familiarize
     you with the task. Next, we will ask you ${n_trials} similar questions.
     <br><br>
-    The questions are all about rating how improbable, impossible, or nonsensical particular scenarios are.
+    The questions are all about rating how ${PROMPT_TYPE[0]} particular scenarios are.
     <br>
     <p>
-    <strong>Improbable</strong> means it is possible, but unlikely (e.g., "I painted the house with my hair."). 
-    <p>
-    <strong>Impossible</strong> means it cannot happen in our world given the laws of nature (e.g., "I painted the house with my mind."). 
-    <p>
-    <strong>Nonsensical</strong> means it does not make sense due to some basic conceptual error (e.g., "I painted the house with my number."). 
+    ${REMINDER_MAP.get(PROMPT_TYPE[0])}
     <p>
     <h3>Your task:</h3>
     <ul>
       <li>Read each question carefully.</li>
-      <li>Answer how improbable, impossible, or nonsensical the sentence is.</li>
+      <li>Answer how ${PROMPT_TYPE[0]} the sentence is.</li>
       <li>You will answer using a slider.</li>
       <li>Respond as quickly as you can.</li>
     </ul>
@@ -270,17 +238,20 @@ var ready = {
   type: jsPsychInstructions,
   pages: [
     `<div class="jspsych-content" align=left style="width:1000px;text-align: left;">
-    We will now commence the main study. We will ask you ${n_trials} simple questions. <b>Every once in a while, we will ask you a question to ensure that you are paying attention to the study!</b>
+    We will now commence the main study. We will ask you ${n_trials} simple questions.
     <br>
     <h3>REMINDER:</h3>
     <br>
-    The questions are all about rating how improbable, impossible, or nonsensical particular scenarios are.
+    The questions are all about rating how ${PROMPT_TYPE[0]} particular scenarios are.
     <br>
+    <p>
+    ${REMINDER_MAP.get(PROMPT_TYPE[0])}
+    <p>
     <h3>Your task:</h3>
     <ul>
       <li>Read each question carefully.</li>
-      <li>Answer how improbable, impossible, or nonsensical the sentence is.</li>
-      <li>You will answer most questions using a slider. Answer the remaining questions by clicking on your choice.</li>
+      <li>Answer how ${PROMPT_TYPE[0]} the sentence is.</li>
+      <li>You will answer using a slider.</li>
       <li>Respond as quickly as you can.</li>
     </ul>
     <h3>IMPORTANT:</h3>
@@ -361,53 +332,9 @@ trial.on_finish = function(data){
 };
 
 
-var optional_attention_check = {
-  type: jsPsychHtmlButtonResponse,
-  data: {},
-  stimulus: `<div style="font-size:20px;"><p>What did the previous question ask you to do?</p></div>`,
-  choices: [
-    "Rate the phrase according to how <b>improbable</b> it is",
-    "Rate the phrase according to how <b>impossible</b> it is",
-    "Rate the phrase according to how <b>nonsensical</b> it is",
-  ]
-};
-optional_attention_check.on_start = function(optional_attention_check){
-  optional_attention_check.data = jsPsych.getAllTimelineVariables();
-  optional_attention_check.data.task_type = "attention_check";
-  optional_attention_check.data.correct_answer = CUR_QUERY;
-  optional_attention_check.data.choices = [
-    "Rate the phrase according to how <b>improbable</b> it is",
-    "Rate the phrase according to how <b>impossible</b> it is",
-    "Rate the phrase according to how <b>nonsensical</b> it is",
-  ];
-
-
-};
-optional_attention_check.on_finish = function(data){
-  // at the end of each trial, update the progress bar
-  // based on the current value and the proportion to update for each trial
-  var cur_progress_bar_value = jsPsych.getProgressBarCompleted();
-  jsPsych.setProgressBar(cur_progress_bar_value + (1/n_trials));
-};
-
-
-var attention_bool = {
-  timeline: [optional_attention_check],
-  conditional_function: function(){
-      if(exp_trial_progress >= ATTN_THRESHOLD){
-        ATTN_THRESHOLD = ATTN_THRESHOLD + ATTN_INCREMENT;
-        console.log(ATTN_THRESHOLD);
-        return true;
-      } else {
-        return false;
-      }
-  }
-}
-
-
 /* define test procedure */
 var test_procedure = {
-  timeline: [trial, attention_bool],
+  timeline: [trial],
   timeline_variables: test_stimuli,
   randomize_order: false
 };
