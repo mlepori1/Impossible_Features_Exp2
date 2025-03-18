@@ -94,7 +94,7 @@ function repeatArray(arr, times){
 
 
 function get_stimulus(verb, object, prep, continuation, condition, reminder) {
-  var task = "Rate the following phrase according to how <b>" + condition + "</b> it is. <p>Reminder:" + reminder + "</p><BR/><BR/>\""
+  var task = "Rate the following phrase according to how <b>" + condition + "</b> it is. <p>Reminder: " + reminder + "</p><BR/><BR/>\""
   var s = task + verb + " " + object + " " + prep + " " + continuation + "\""
   s = s.replace("[POSS]", "their")
   return s
@@ -124,10 +124,10 @@ var S_COND_ORDER = get_s_condition_order(STIM_COUNT);
 S_COND_ORDER = jsPsych.randomization.sampleWithoutReplacement(S_COND_ORDER, STIM_COUNT);
 
 // Generate question condition order for train and test
-var Q_COND_ORDER_TRAIN = get_q_condition_order(TRAIN_COUNT);
+var Q_COND_ORDER_TRAIN = get_q_condition(TRAIN_COUNT);
 
 // Repeat [improbable, impossible, inconceivable] in that order over and over
-var Q_COND_ORDER = get_q_condition_order(STIM_COUNT);
+var Q_COND_ORDER = get_q_condition(STIM_COUNT);
 
 /**************************************************************************
  * EXPERIMENT CODE
@@ -145,7 +145,7 @@ var instructions = {
     This study will consist of two short phases. First, we will ask you ${TRAIN_COUNT} simple questions to familiarize
     you with the task. Next, we will ask you ${n_trials} similar questions.
     <br><br>
-    The questions are all about rating how ${PROMPT_TYPE[0]} particular scenarios are.
+    The questions are all about rating how ${PROMPT_TYPE_MAP.get(PROMPT_TYPE[0])} particular scenarios are.
     <br>
     <p>
     ${REMINDER_MAP.get(PROMPT_TYPE[0])}
@@ -242,7 +242,7 @@ var ready = {
     <br>
     <h3>REMINDER:</h3>
     <br>
-    The questions are all about rating how ${PROMPT_TYPE[0]} particular scenarios are.
+    The questions are all about rating how ${PROMPT_TYPE_MAP.get(PROMPT_TYPE[0])} particular scenarios are.
     <br>
     <p>
     ${REMINDER_MAP.get(PROMPT_TYPE[0])}
@@ -319,10 +319,6 @@ trial.on_finish = function(data){
   // based on the current value and the proportion to update for each trial
   var cur_progress_bar_value = jsPsych.getProgressBarCompleted();
   jsPsych.setProgressBar(cur_progress_bar_value + (1/n_trials));
-
-  exp_trial_progress = exp_trial_progress + (1/n_exp_trials);
-  console.log(exp_trial_progress)
-  console.log(ATTN_THRESHOLD);
 
   // Save other variables.
   // data.counterbalance = CUR_COUNTERBALANCE;
