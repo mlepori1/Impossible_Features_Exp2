@@ -11,7 +11,8 @@ var test_stimuli = [
     "probable": "an oven",
     "improbable": "an airfryer",
     "impossible": "a freezer",
-    "inconceivable": "a sigh"
+    "inconceivable": "a sigh",
+    "context": "They do not have an oven, so they are",
   },
   {
     "item_id": 1,
@@ -25,7 +26,8 @@ var test_stimuli = [
     "probable": "a kettle",
     "improbable": "a microwave",
     "impossible": "a refrigerator",
-    "inconceivable": "justice"
+    "inconceivable": "justice",
+    "context": "They do not have a kettle, so they are",
   },
   {
     "item_id": 2,
@@ -39,7 +41,8 @@ var test_stimuli = [
     "probable": "a rock",
     "improbable": "a table",
     "impossible": "a pillow",
-    "inconceivable": "a texture"
+    "inconceivable": "a texture",
+    "context": "They do not have a rock, so they are",
   },
   {
     "item_id": 3,
@@ -53,7 +56,8 @@ var test_stimuli = [
     "probable": "brick",
     "improbable": "grass",
     "impossible": "gas",
-    "inconceivable": "language"
+    "inconceivable": "language",
+    "context": "They do not have any brick, so they are",
   },
   {
     "item_id": 4,
@@ -67,7 +71,8 @@ var test_stimuli = [
     "probable": "steel",
     "improbable": "plastic",
     "impossible": "soup",
-    "inconceivable": "dance"
+    "inconceivable": "dance",
+    "context": "They do not have any steel, so they are",
   },
   {
     "item_id": 5,
@@ -81,7 +86,8 @@ var test_stimuli = [
     "probable": "a phone",
     "improbable": "a laptop",
     "impossible": "a sandwich",
-    "inconceivable": "mass"
+    "inconceivable": "mass",
+    "context": "They do not have a phone, so they are",
   },
   {
     "item_id": 6,
@@ -95,7 +101,8 @@ var test_stimuli = [
     "probable": "a tote bag",
     "improbable": "a backpack",
     "impossible": "a tornado",
-    "inconceivable": "a law"
+    "inconceivable": "a law",
+    "context": "They do not have a tote bag, so they are",
   },
   {
     "item_id": 7,
@@ -109,7 +116,8 @@ var test_stimuli = [
     "probable": "a chisel",
     "improbable": "a nail",
     "impossible": "a sock",
-    "inconceivable": "laughter"
+    "inconceivable": "laughter",
+    "context": "They do not have a chisel, so they are",
   },
   {
     "item_id": 8,
@@ -123,7 +131,8 @@ var test_stimuli = [
     "probable": "a lake",
     "improbable": "a puddle",
     "impossible": "a raindrop",
-    "inconceivable": "an exclamation"
+    "inconceivable": "an exclamation",
+    "context": "They are not near a lake, so they are",
   },
   {
     "item_id": 9,
@@ -137,7 +146,8 @@ var test_stimuli = [
     "probable": "ice",
     "improbable": "snow",
     "impossible": "fire",
-    "inconceivable": "yesterday"
+    "inconceivable": "yesterday",
+    "context": "They do not have any ice, so they are",
   },
   {
     "item_id": 10,
@@ -151,7 +161,8 @@ var test_stimuli = [
     "probable": "a knife",
     "improbable": "a sword",
     "impossible": "a rag",
-    "inconceivable": "a color"
+    "inconceivable": "a color",
+    "context": "They do not have a knife, so they are",
   },
   {
     "item_id": 11,
@@ -165,7 +176,8 @@ var test_stimuli = [
     "probable": "a sponge",
     "improbable": "a scarf",
     "impossible": "mustard",
-    "inconceivable": "a country"
+    "inconceivable": "a country",
+    "context": "They do not have a sponge, so they are",
   },
   {
     "item_id": 12,
@@ -179,7 +191,8 @@ var test_stimuli = [
     "probable": "a vacuum",
     "improbable": "a hat",
     "impossible": "a crayon",
-    "inconceivable": "a week"
+    "inconceivable": "a week",
+    "context": "They do not have a vacuum, so they are",
   },
   {
     "item_id": 13,
@@ -193,7 +206,8 @@ var test_stimuli = [
     "probable": "a ladder",
     "improbable": "a rope",
     "impossible": "oil",
-    "inconceivable": "a poem"
+    "inconceivable": "a poem",
+    "context": "They do not have a ladder, so they are",
   },
   {
     "item_id": 14,
@@ -207,7 +221,8 @@ var test_stimuli = [
     "probable": "a zipper",
     "improbable": "glue",
     "impossible": "fog",
-    "inconceivable": "a word"
+    "inconceivable": "a word",
+    "context": "They do not have a zipper, so they are",
   },
   {
     "item_id": 15,
@@ -221,7 +236,8 @@ var test_stimuli = [
     "probable": "blocks",
     "improbable": "bubbles",
     "impossible": "sparks",
-    "inconceivable": "seasons"
+    "inconceivable": "seasons",
+    "context": "They do not have blocks, so they are",
   },
   {
     "item_id": 16,
@@ -235,7 +251,8 @@ var test_stimuli = [
     "probable": "pasta",
     "improbable": "insects",
     "impossible": "the moon",
-    "inconceivable": "thoughts"
+    "inconceivable": "thoughts",
+    "context": "They do not have pasta, so they are",
   },
   {
     "item_id": 17,
@@ -249,7 +266,8 @@ var test_stimuli = [
     "probable": "a fan",
     "improbable": "shades",
     "impossible": "a heater",
-    "inconceivable": "a taste"
+    "inconceivable": "a taste",
+    "context": "They do not have a fan, so they are",
   },
   {
     "item_id": 18,
@@ -263,7 +281,8 @@ var test_stimuli = [
     "probable": "curtains",
     "improbable": "sheets",
     "impossible": "a hair",
-    "inconceivable": "a chant"
+    "inconceivable": "a chant",
+    "context": "They do not have curtains, so they are",
   },
   {
     "item_id": 19,
@@ -277,7 +296,8 @@ var test_stimuli = [
     "probable": "clay",
     "improbable": "mud",
     "impossible": "smoke",
-    "inconceivable": "math"
+    "inconceivable": "math",
+    "context": "They do not have clay, so they are",
   },
   {
     "item_id": 20,
@@ -291,7 +311,8 @@ var test_stimuli = [
     "probable": "a shoe",
     "improbable": "a chair",
     "impossible": "a tissue",
-    "inconceivable": "a day"
+    "inconceivable": "a day",
+    "context": "They do not have a shoe, so they are",
   },
   {
     "item_id": 21,
@@ -305,7 +326,8 @@ var test_stimuli = [
     "probable": "a lawnmower",
     "improbable": "a scythe",
     "impossible": "a popsicle",
-    "inconceivable": "an essay"
+    "inconceivable": "an essay",
+    "context": "They do not have a lawnmower, so they are",
   },
   {
     "item_id": 22,
@@ -319,7 +341,8 @@ var test_stimuli = [
     "probable": "scissors",
     "improbable": "a scalpel",
     "impossible": "fur",
-    "inconceivable": "a snore"
+    "inconceivable": "a snore",
+    "context": "They do not have scissors, so they are",
   },
   {
     "item_id": 23,
@@ -333,7 +356,8 @@ var test_stimuli = [
     "probable": "a baseball bat",
     "improbable": "a dumbbell",
     "impossible": "a breeze",
-    "inconceivable": "a nap"
+    "inconceivable": "a nap",
+    "context": "They do not have a baseball bat, so they are",
   },
   {
     "item_id": 24,
@@ -347,7 +371,8 @@ var test_stimuli = [
     "probable": "a shovel",
     "improbable": "a spatula",
     "impossible": "dirt",
-    "inconceivable": "a yawn"
+    "inconceivable": "a yawn",
+    "context": "They do not have a shovel, so they are",
   },
   {
     "item_id": 25,
@@ -361,7 +386,8 @@ var test_stimuli = [
     "probable": "coffee",
     "improbable": "wine",
     "impossible": "a floor",
-    "inconceivable": "a myth"
+    "inconceivable": "a myth",
+    "context": "They do not have coffee, so they are",
   },
   {
     "item_id": 26,
@@ -375,7 +401,8 @@ var test_stimuli = [
     "probable": "a shelf",
     "improbable": "a bed",
     "impossible": "a galaxy",
-    "inconceivable": "a sigh"
+    "inconceivable": "a sigh",
+    "context": "They do not have a shelf, so they are",
   },
   {
     "item_id": 27,
@@ -389,7 +416,8 @@ var test_stimuli = [
     "probable": "an anchor",
     "improbable": "an anvil",
     "impossible": "a balloon",
-    "inconceivable": "a lesson"
+    "inconceivable": "a lesson",
+    "context": "They do not have an anchor, so they are",
   },
   {
     "item_id": 28,
@@ -403,7 +431,8 @@ var test_stimuli = [
     "probable": "water",
     "improbable": "honey",
     "impossible": "lightning",
-    "inconceivable": "minutes"
+    "inconceivable": "minutes",
+    "context": "They do not have water, so they are",
   },
   {
     "item_id": 29,
@@ -417,7 +446,8 @@ var test_stimuli = [
     "probable": "a towel",
     "improbable": "a sweater",
     "impossible": "a liquid",
-    "inconceivable": "freedom"
+    "inconceivable": "freedom",
+    "context": "They do not have a towel, so they are",
   },
   {
     "item_id": 30,
@@ -431,7 +461,8 @@ var test_stimuli = [
     "probable": "a clothesline",
     "improbable": "a fan",
     "impossible": "juice",
-    "inconceivable": "courage"
+    "inconceivable": "courage",
+    "context": "They do not have a clothesline, so they are",
   },
   {
     "item_id": 31,
@@ -445,7 +476,8 @@ var test_stimuli = [
     "probable": "a spoon",
     "improbable": "a bucket",
     "impossible": "a sieve",
-    "inconceivable": "history"
+    "inconceivable": "history",
+    "context": "They do not have a spoon, so they are",
   },
   {
     "item_id": 32,
@@ -459,7 +491,8 @@ var test_stimuli = [
     "probable": "a door",
     "improbable": "a window",
     "impossible": "a wall",
-    "inconceivable": "a theory"
+    "inconceivable": "a theory",
+    "context": "There is no door, so they are",
   },
   {
     "item_id": 33,
@@ -473,7 +506,8 @@ var test_stimuli = [
     "probable": "sand",
     "improbable": "acorns",
     "impossible": "buildings",
-    "inconceivable": "time"
+    "inconceivable": "time",
+    "context": "They are not near sand, so they are",
   },
   {
     "item_id": 34,
@@ -487,7 +521,8 @@ var test_stimuli = [
     "probable": "coins",
     "improbable": "cream",
     "impossible": "sofas",
-    "inconceivable": "luck"
+    "inconceivable": "luck",
+    "context": "They do not have coins, so they are",
   },
   {
     "item_id": 35,
@@ -501,7 +536,8 @@ var test_stimuli = [
     "probable": "a pot",
     "improbable": "a mug",
     "impossible": "a marble",
-    "inconceivable": "a sneeze"
+    "inconceivable": "a sneeze",
+    "context": "They do not have a pot, so they are",
   },
   {
     "item_id": 36,
@@ -515,7 +551,8 @@ var test_stimuli = [
     "probable": "screws",
     "improbable": "string",
     "impossible": "vapor",
-    "inconceivable": "a handshake"
+    "inconceivable": "a handshake",
+    "context": "They do not have screws, so they are",
   },
   {
     "item_id": 37,
@@ -529,7 +566,8 @@ var test_stimuli = [
     "probable": "a closet",
     "improbable": "a forest",
     "impossible": "a cloud",
-    "inconceivable": "a gasp"
+    "inconceivable": "a gasp",
+    "context": "They do not have a closet, so they are",
   },
   {
     "item_id": 38,
@@ -543,7 +581,8 @@ var test_stimuli = [
     "probable": "a forklift",
     "improbable": "a pulley",
     "impossible": "foam",
-    "inconceivable": "an emotion"
+    "inconceivable": "an emotion",
+    "context": "They do not have a forklift, so they are",
   },
   {
     "item_id": 39,
@@ -557,7 +596,8 @@ var test_stimuli = [
     "probable": "a match",
     "improbable": "a blowtorch",
     "impossible": "yogurt",
-    "inconceivable": "surprises"
+    "inconceivable": "surprises",
+    "context": "They do not have a match, so they are",
   },
   {
     "item_id": 40,
@@ -571,7 +611,8 @@ var test_stimuli = [
     "probable": "bread",
     "improbable": "lettuce",
     "impossible": "a star",
-    "inconceivable": "a mile"
+    "inconceivable": "a mile",
+    "context": "They do not have bread, so they are",
   },
   {
     "item_id": 41,
@@ -585,7 +626,8 @@ var test_stimuli = [
     "probable": "a blender",
     "improbable": "a whisk",
     "impossible": "wind",
-    "inconceivable": "decades"
+    "inconceivable": "decades",
+    "context": "They do not have a blender, so they are",
   },
   {
     "item_id": 42,
@@ -599,7 +641,8 @@ var test_stimuli = [
     "probable": "a stove",
     "improbable": "a radiator",
     "impossible": "a napkin",
-    "inconceivable": "a promise"
+    "inconceivable": "a promise",
+    "context": "They do not have a stove, so they are",
   },
   {
     "item_id": 43,
@@ -613,7 +656,8 @@ var test_stimuli = [
     "probable": "[POSS] hands",
     "improbable": "[POSS] feet",
     "impossible": "[POSS] mind",
-    "inconceivable": "an opinion"
+    "inconceivable": "an opinion",
+    "context": "They do not have hands, so they are",
   },
   {
     "item_id": 44,
@@ -627,7 +671,8 @@ var test_stimuli = [
     "probable": "a suitcase",
     "improbable": "a pocket",
     "impossible": "a raspberry",
-    "inconceivable": "a groan"
+    "inconceivable": "a groan",
+    "context": "They do not have a suitcase, so they are",
   },
   {
     "item_id": 45,
@@ -641,7 +686,8 @@ var test_stimuli = [
     "probable": "a brush",
     "improbable": "a mop",
     "impossible": "a bathtub",
-    "inconceivable": "a whisper"
+    "inconceivable": "a whisper",
+    "context": "They do not have a brush, so they are",
   },
   {
     "item_id": 46,
@@ -655,7 +701,8 @@ var test_stimuli = [
     "probable": "cement",
     "improbable": "seashells",
     "impossible": "a comet",
-    "inconceivable": "happiness"
+    "inconceivable": "happiness",
+    "context": "They do not have cement, so they are",
   },
   {
     "item_id": 47,
@@ -669,7 +716,8 @@ var test_stimuli = [
     "probable": "tweezers",
     "improbable": "tongs",
     "impossible": "a spoon",
-    "inconceivable": "sympathy"
+    "inconceivable": "sympathy",
+    "context": "They do not have tweezers, so they are",
   },
   {
     "item_id": 48,
@@ -683,7 +731,8 @@ var test_stimuli = [
     "probable": "a cloth",
     "improbable": "a shirt",
     "impossible": "a chainsaw",
-    "inconceivable": "music"
+    "inconceivable": "music",
+    "context": "They do not have a cloth, so they are",
   },
   {
     "item_id": 49,
@@ -697,7 +746,8 @@ var test_stimuli = [
     "probable": "a thumbtack",
     "improbable": "a spear",
     "impossible": "cotton balls",
-    "inconceivable": "a story"
+    "inconceivable": "a story",
+    "context": "They do not have a thumbtack, so they are",
   },
   {
     "item_id": 50,
@@ -711,7 +761,8 @@ var test_stimuli = [
     "probable": "bleach",
     "improbable": "vinegar",
     "impossible": "dirt",
-    "inconceivable": "truth"
+    "inconceivable": "truth",
+    "context": "They do not have bleach, so they are",
   },
   {
     "item_id": 51,
@@ -725,7 +776,8 @@ var test_stimuli = [
     "probable": "a sink",
     "improbable": "a hose",
     "impossible": "a clock",
-    "inconceivable": "a giggle"
+    "inconceivable": "a giggle",
+    "context": "They do not have a sink, so they are",
   },
   {
     "item_id": 52,
@@ -739,7 +791,8 @@ var test_stimuli = [
     "probable": "a needle",
     "improbable": "a toothpick",
     "impossible": "a potato",
-    "inconceivable": "thunder"
+    "inconceivable": "thunder",
+    "context": "They do not have a needle, so they are",
   },
   {
     "item_id": 53,
@@ -753,7 +806,8 @@ var test_stimuli = [
     "probable": "a stone",
     "improbable": "a frisbee",
     "impossible": "confetti",
-    "inconceivable": "a concept"
+    "inconceivable": "a concept",
+    "context": "They do not have a stone, so they are",
   },
   {
     "item_id": 54,
@@ -767,7 +821,8 @@ var test_stimuli = [
     "probable": "a razor",
     "improbable": "a knife",
     "impossible": "a teabag",
-    "inconceivable": "a belief"
+    "inconceivable": "a belief",
+    "context": "They do not have a razor, so they are",
   },
   {
     "item_id": 55,
@@ -781,7 +836,8 @@ var test_stimuli = [
     "probable": "a hammer",
     "improbable": "a boulder",
     "impossible": "a leaf",
-    "inconceivable": "a number"
+    "inconceivable": "a number",
+    "context": "They do not have a hammer, so they are",
   },
   {
     "item_id": 56,
@@ -795,7 +851,8 @@ var test_stimuli = [
     "probable": "an axe",
     "improbable": "a saw",
     "impossible": "a feather",
-    "inconceivable": "a gasp"
+    "inconceivable": "a gasp",
+    "context": "They do not have an axe, so they are",
   },
   {
     "item_id": 57,
@@ -809,7 +866,8 @@ var test_stimuli = [
     "probable": "an orange",
     "improbable": "meat",
     "impossible": "an envelope",
-    "inconceivable": "a mumble"
+    "inconceivable": "a mumble",
+    "context": "They do not have an orange, so they are",
   },
   {
     "item_id": 58,
@@ -823,7 +881,8 @@ var test_stimuli = [
     "probable": "[POSS] finger",
     "improbable": "[POSS] nose",
     "impossible": "[POSS] breath",
-    "inconceivable": "a sight"
+    "inconceivable": "a sight",
+    "context": "They do not have fingers, so they are",
   },
   {
     "item_id": 59,
@@ -837,7 +896,8 @@ var test_stimuli = [
     "probable": "kindling",
     "improbable": "furniture",
     "impossible": "milk",
-    "inconceivable": "humor"
+    "inconceivable": "humor",
+    "context": "They do not have kindling, so they are",
   },
   {
     "item_id": 60,
@@ -851,7 +911,8 @@ var test_stimuli = [
     "probable": "a cabinet",
     "improbable": "an attic",
     "impossible": "a thimble",
-    "inconceivable": "an equation"
+    "inconceivable": "an equation",
+    "context": "They do not have a cabinet, so they are",
   },
   {
     "item_id": 61,
@@ -865,7 +926,8 @@ var test_stimuli = [
     "probable": "the beach",
     "improbable": "the desert",
     "impossible": "the sun",
-    "inconceivable": "a verb"
+    "inconceivable": "a verb",
+    "context": "They are not near the beach, so they are",
   },
   {
     "item_id": 62,
@@ -879,7 +941,8 @@ var test_stimuli = [
     "probable": "a wrench",
     "improbable": "chopsticks",
     "impossible": "a house",
-    "inconceivable": "a dream"
+    "inconceivable": "a dream",
+    "context": "They do not have a wrench, so they are",
   },
   {
     "item_id": 63,
@@ -893,7 +956,8 @@ var test_stimuli = [
     "probable": "a pie",
     "improbable": "a salad",
     "impossible": "a cherry",
-    "inconceivable": "honesty"
+    "inconceivable": "honesty",
+    "context": "They do not like pie, so they are",
   },
   {
     "item_id": 64,
@@ -907,7 +971,8 @@ var test_stimuli = [
     "probable": "a key",
     "improbable": "a screwdriver",
     "impossible": "a marshmallow",
-    "inconceivable": "a lie"
+    "inconceivable": "a lie",
+    "context": "They do not have a key, so they are",
   },
   {
     "item_id": 65,
@@ -921,7 +986,8 @@ var test_stimuli = [
     "probable": "shampoo",
     "improbable": "detergent",
     "impossible": "a rainbow",
-    "inconceivable": "applause"
+    "inconceivable": "applause",
+    "context": "They do not have shampoo, so they are",
   },
   {
     "item_id": 66,
@@ -935,7 +1001,8 @@ var test_stimuli = [
     "probable": "leather",
     "improbable": "wood",
     "impossible": "stars",
-    "inconceivable": "traffic"
+    "inconceivable": "traffic",
+    "context": "They do not own any leather, so they are",
   },
   {
     "item_id": 67,
@@ -949,7 +1016,8 @@ var test_stimuli = [
     "probable": "paper",
     "improbable": "a dress",
     "impossible": "ketchup",
-    "inconceivable": "gossip"
+    "inconceivable": "gossip",
+    "context": "They do not have paper, so they are",
   },
   {
     "item_id": 68,
@@ -963,7 +1031,8 @@ var test_stimuli = [
     "probable": "a pen",
     "improbable": "a stylus",
     "impossible": "a snowflake",
-    "inconceivable": "a marathon"
+    "inconceivable": "a marathon",
+    "context": "They do not have a pen, so they are",
   },
   {
     "item_id": 69,
@@ -977,6 +1046,7 @@ var test_stimuli = [
     "probable": "a chalkboard",
     "improbable": "a billboard",
     "impossible": "an atom",
-    "inconceivable": "a scream"
+    "inconceivable": "a scream",
+    "context": "They do not have a chalkboard, so they are",
   }
 ]
