@@ -34,26 +34,93 @@ jsPsych.data.addProperties({
 
 var DEBUG = false; // CHANGE TO FALSE FOR REAL EXPERIMENT
 var REQUIRE_QUESTIONS = !DEBUG; 
-
-var STIM_COUNT = 60;
-var TRAIN_COUNT = 4;
+var STIM_COUNT = 95;
+var ATTN_COUNT = 5;
+var CONTEXT = true // Change to true to include contextual info in each button
 
 // Get stimuli according to list ID.
 var stimuli = test_stimuli; // test_stimuli is read from prefixes_stimuli.js
 if (DEBUG) {
-  STIM_COUNT = 4; // just use a small number of stimuli when debugging
+  STIM_COUNT = 15;
 }
 
-stimuli = jsPsych.randomization.sampleWithoutReplacement(stimuli, STIM_COUNT + TRAIN_COUNT); // Sample stimuli randomly
-var train_stimuli = stimuli.slice(0, TRAIN_COUNT)
-var test_stimuli = stimuli.slice(TRAIN_COUNT, TRAIN_COUNT + STIM_COUNT)
+// For deciding when to deploy attention checks
+var n_exp_trials = STIM_COUNT;
+var exp_trial_progress = 0.0;
+var ATTN_INCREMENT = 1 / ATTN_COUNT;
+var ATTN_THRESHOLD = ATTN_INCREMENT;
 
-var n_trials = test_stimuli.length; 
+var stimuli_0 = jsPsych.randomization.sampleWithReplacement(test_stimuli, STIM_COUNT); // Select stimuli for left option
+var stimuli_1 = jsPsych.randomization.sampleWithReplacement(test_stimuli, STIM_COUNT); // Select stimuli for right option
+var attn_check_stimuli = jsPsych.randomization.sampleWithReplacement(test_stimuli, STIM_COUNT); // Select stimuli for right option
+
+// Updated every trial to give options for attn check
+var CURR_CHOICES = '';
+// Updated every attn check to verify correctness
+var CORRECT_CHOICE = '';
+var ATTN_CHOICE = '';
+var ATTN_CHOICES = '';
+
+var n_trials = STIM_COUNT + ATTN_COUNT; 
 
 // Conditions.
-var CONDITIONS = [
-  "probable", "improbable", "impossible", "inconceivable"
-];
+if (CONTEXT) {
+  var CONDITIONS = [
+    "improbable", "impossible", "inconceivable"
+  ];
+} else {
+  var CONDITIONS = [
+    "probable", "improbable", "impossible", "inconceivable"
+  ];
+}
+
+var CONCEPT = [
+  "improbable", "impossible", "inconceivable"
+]
+
+var CURR_CONCEPT = jsPsych.randomization.sampleWithReplacement(CONCEPT, 1)[0];
+
+// Iterate through stimuli_0 and stimuli_1, create a new array with both stimuli and assign conditions.
+// Ensure that if the stimuli are the same, the conditions are not.
+var combined_stimuli = [];
+
+for (let i = 0; i < STIM_COUNT; i++) {
+
+  s_0 = stimuli_0[i]["classification_prefix"];
+  s_1 = stimuli_1[i]["classification_prefix"];
+  attn = attn_check_stimuli[i]["classification_prefix"]
+
+  if (s_0 == s_1){
+    var conditions = jsPsych.randomization.sampleWithoutReplacement(CONDITIONS, 2);
+  } else {
+    var conditions = jsPsych.randomization.sampleWithReplacement(CONDITIONS, 2);
+  }
+
+  // ensure that the attention check is always distinct from the two choices
+  var attn_condition = jsPsych.randomization.sampleWithReplacement(CONDITIONS, 1)[0];
+  while (conditions.includes(attn_condition)){
+    attn_condition = jsPsych.randomization.sampleWithReplacement(CONDITIONS, 1)[0];
+  }
+
+  combined_stimuli.push(
+      {
+        "stimulus_0": s_0,
+        "stimulus_1": s_1,
+        "attn_stimulus": attn,
+        "condition_0": conditions[0],
+        "condition_1": conditions[1],
+        "attn_condition": attn_condition,
+        "continuation_0": stimuli_0[i][conditions[0]],
+        "continuation_1": stimuli_1[i][conditions[1]],
+        "attn_continuation": attn_check_stimuli[i][attn_condition],
+        "id_0": stimuli_0[i]["item_id"],
+        "id_1": stimuli_1[i]["item_id"],
+        "context_0": stimuli_0[i]["context"],
+        "context_1": stimuli_1[i]["context"],
+        "attn_context": attn_check_stimuli[i]["context"],
+      }
+    )
+}
 
 const PROMPT_TYPE_MAP = new Map() 
 PROMPT_TYPE_MAP.set("improbable", "improbable")
@@ -63,71 +130,30 @@ PROMPT_TYPE_MAP.set("inconceivable", "nonsensical")
 const REMINDER_MAP = new Map()
 REMINDER_MAP.set("improbable", 
   `<strong>Improbable</strong> means it is possible, but unlikely (e.g., "I painted the house with my hair.").`)
-
 REMINDER_MAP.set("impossible",
   `<strong>Impossible</strong> means it cannot happen in our world given the laws of nature (e.g., "I painted the house with my mind."). `)
 REMINDER_MAP.set("inconceivable",
   `<strong>Nonsensical</strong> means it does not make sense due to some basic conceptual error ("I painted the house with my number."). `)
 
-// Randomly Select Prompt Type, then keep it fixed 
-var PROMPT_TYPE = ["improbable", "impossible", "inconceivable"]
-PROMPT_TYPE= jsPsych.randomization.sampleWithoutReplacement(PROMPT_TYPE, 1)
-
-// These variables will be updated on each trial.
-var CUR_CONDITION = "";
-var CUR_PROMPT = "";
-var CUR_QUERY = "";
-
 /**************************************************************************
  * HELPER FUNCTIONS
 **************************************************************************/
 
-function repeatElements(arr, times) {
-  var l = arr.flatMap(num => Array(times).fill(num));
-  return l
+function capitalizeFirstLetter(string) {
+  console.log(string);
+  return string[0].toUpperCase() + string.slice(1);
 }
 
-function repeatArray(arr, times){
-  var l = [].concat(...Array(times).fill(arr));
-  return l
+function get_stimulus(stimulus, continuation, context) {
+  if (context === ``){
+    var stim = capitalizeFirstLetter(stimulus) + " " + continuation;
+
+  } else {
+    var stim = capitalizeFirstLetter(context) + " " + stimulus + " " + continuation;
+  }  
+  stim = stim.replace("[POSS]", "their");
+  return stim
 }
-
-
-function get_stimulus(verb, object, prep, continuation, condition, reminder) {
-  var task = "Rate the following phrase according to how <b>" + condition + "</b> it is. <p>Reminder: " + reminder + "</p><BR/><BR/>\""
-  var s = task + verb + " " + object + " " + prep + " " + continuation + "\""
-  s = s.replace("[POSS]", "their")
-  return s
-}
-
-function get_s_condition_order(COUNT) {
-  // There are COUNT test/train stimuli in total, and 4 stim conditions, so make sure everyone
-  // sees COUNT/4 examples of each condition
-  var s = [];
-  CONDITIONS.forEach((cond) => s = s.concat(Array(COUNT/4).fill(cond)))
-  return s
-}
-
-function get_q_condition(COUNT) {
-  // Generate a list of COUNT instances of each q_condition
-  var q = [];
-  PROMPT_TYPE.forEach((cond) => q = q.concat(Array(COUNT).fill(cond)))
-  return q
-}
-
-
-// Generate train stimulus condition order and 
-// test stimulus condition order repeated three times
-var S_COND_ORDER_TRAIN= get_s_condition_order(TRAIN_COUNT);
-
-var S_COND_ORDER = get_s_condition_order(STIM_COUNT);
-S_COND_ORDER = jsPsych.randomization.sampleWithoutReplacement(S_COND_ORDER, STIM_COUNT);
-
-// Generate question condition order for train and test
-var Q_COND_ORDER_TRAIN = get_q_condition(TRAIN_COUNT);
-
-// Repeat [improbable, impossible, inconceivable] in that order over and over
-var Q_COND_ORDER = get_q_condition(STIM_COUNT);
 
 /**************************************************************************
  * EXPERIMENT CODE
@@ -136,203 +162,159 @@ var Q_COND_ORDER = get_q_condition(STIM_COUNT);
 /* create timeline */
 var timeline = [];
 
-/* define instructions trial */
+// Instructions procedure
 var instructions = {
-  type: jsPsychInstructions,
-  pages: [
-    `<div class="jspsych-content" align=left style="width:1000px;text-align: left;">
-    <h2>Hello, and welcome to our study!</h2>
-    This study will consist of two short phases. First, we will ask you ${TRAIN_COUNT} simple questions to familiarize
-    you with the task. Next, we will ask you ${n_trials} similar questions.
-    <br><br>
-    The questions are all about rating how ${PROMPT_TYPE_MAP.get(PROMPT_TYPE[0])} particular scenarios are.
-    <br>
-    <p>
-    ${REMINDER_MAP.get(PROMPT_TYPE[0])}
-    <p>
-    <h3>Your task:</h3>
-    <ul>
-      <li>Read each question carefully.</li>
-      <li>Answer how ${PROMPT_TYPE[0]} the sentence is.</li>
-      <li>You will answer using a slider.</li>
-      <li>Respond as quickly as you can.</li>
-    </ul>
+  type: jsPsychHtmlKeyboardResponse,
+  choices: " ",
+  stimulus: `
+  <div class="jspsych-content" align=left style="width:100%;text-align: left;">
+  <h2>Hello, and welcome to our study!</h2>
+      In this study, we will ask you to ${STIM_COUNT + ATTN_COUNT} questions.
+      <p>
+      In ${STIM_COUNT} of the questions, we will need your help deciding which statement is more <strong>${PROMPT_TYPE_MAP.get(CURR_CONCEPT)}</strong>.
+      </p>
+      ${REMINDER_MAP.get(CURR_CONCEPT)}
+      <p>
+      The remaining questions will check to make sure that you are paying attention to the study.
+      <p>
     <h3>IMPORTANT:</h3>
     <ul>
-      <li><strong>Please use the entire slider when responding.</strong></li>
+      <li>Respond as quickly as you can.</li>
       <li>Answer the questions based on what is possible given the physical laws of the real world.</li>
       <li>There are no right or wrong answers. We are simply interested in your intuitions.</li>
-    </ul>
-    <br>
-    Once you are ready, click the button below to begin the first phase of the study.
-    </div>
-    <br>`
-  ],
-  button_label_next: "Begin Phase 1",
-  allow_backward: false,
-  show_clickable_nav: true
+      </ul>
+    Once you are done reading this page, please press SPACEBAR to continue.
+    </p>
+  </div>
+  `
 }
-instructions.on_finish = function (data) {data.task_type = "instructions";};
 timeline.push(instructions);
 
-// Define the behavior of the training trials, which is identical to test trails
-// except using different stimuli
-var train_trial = {
-  type: jsPsychHtmlSliderResponse,
-  data: {},
-  stimulus: function() {
-    // Get last element of pre-generated order of conditions.
-    CUR_CONDITION = S_COND_ORDER_TRAIN.shift();
-    CUR_PROMPT = Q_COND_ORDER_TRAIN.shift();
 
-    CUR_QUERY = get_stimulus(
-      jsPsych.timelineVariable("verb_participle"), 
-      jsPsych.timelineVariable("object"),
-      jsPsych.timelineVariable("prep"),
-      jsPsych.timelineVariable(CUR_CONDITION),
-      PROMPT_TYPE_MAP.get(CUR_PROMPT),
-      REMINDER_MAP.get(CUR_PROMPT),
-
-    );
-    var html = `<div style="font-size:20px;"><p>${CUR_QUERY}</p></div>`;
-    return html
-  },
-
-  require_movement: true,
-  min: 0,
-  max: 100,
-  // step: 1,
-  labels: function() {
-    return ["", `More ${PROMPT_TYPE_MAP.get(CUR_PROMPT)} &#8594`, ""]
-  },
-  slider_start: 50,
-  slider_width: 400
-};
-train_trial.on_start = function(train_trial){
-  train_trial.data = jsPsych.getAllTimelineVariables();
-  train_trial.data.task_type = "training";
-};
-train_trial.on_finish = function(data){
-  // at the end of each trial, update the progress bar
-  // based on the current value and the proportion to update for each trial
-  var cur_progress_bar_value = jsPsych.getProgressBarCompleted();
-  jsPsych.setProgressBar(cur_progress_bar_value + (1/TRAIN_COUNT));
-
-  // Save other variables.
-  data.condition = CUR_CONDITION;
-  data.prompt = CUR_PROMPT
-  data.query = CUR_QUERY;
-};
-
-
-/* define train_trial procedure */
-var train_procedure = {
-  timeline: [train_trial],
-  timeline_variables: train_stimuli,
-  randomize_order: false
-};
-timeline.push(train_procedure);
-
-/* define ready trial, which occurs between train and test */
-var ready = {
-  type: jsPsychInstructions,
-  pages: [
-    `<div class="jspsych-content" align=left style="width:1000px;text-align: left;">
-    We will now commence the main study. We will ask you ${n_trials} simple questions.
-    <br>
-    <h3>REMINDER:</h3>
-    <br>
-    The questions are all about rating how ${PROMPT_TYPE_MAP.get(PROMPT_TYPE[0])} particular scenarios are.
-    <br>
-    <p>
-    ${REMINDER_MAP.get(PROMPT_TYPE[0])}
-    <p>
-    <h3>Your task:</h3>
-    <ul>
-      <li>Read each question carefully.</li>
-      <li>Answer how ${PROMPT_TYPE[0]} the sentence is.</li>
-      <li>You will answer using a slider.</li>
-      <li>Respond as quickly as you can.</li>
-    </ul>
-    <h3>IMPORTANT:</h3>
-    <ul>
-      <li><strong>Please use the entire slider when responding.</strong></li>
-      <li>Answer the questions based on what is possible given the physical laws of the real world.</li>
-      <li>There are no right or wrong answers. We are simply interested in your intuitions.</li>
-    </ul>
-    <br>
-    Once you are ready, click the button below to begin the second phase of the study.
-    </div>
-    <br>`
-  ],
-  button_label_next: "Begin Phase 2",
-  allow_backward: false,
-  show_clickable_nav: true
-}
-ready.on_finish = function (data) {
-  data.task_type = "ready";
-  cur_progress_bar_value = 0;
-  jsPsych.setProgressBar(0);
-
-};
-timeline.push(ready);
-
-
-// define behavior of main experimental trails
+// Procedure for the trial slides
 var trial = {
-  type: jsPsychHtmlSliderResponse,
-  data: {},
-  stimulus: function() {
+  type: jsPsychHtmlButtonResponse,
+  stimulus: `<div style="font-size:20px;"><p>Which scenario is more ${PROMPT_TYPE_MAP.get(CURR_CONCEPT)}?</p>
+  Reminder: ${REMINDER_MAP.get(CURR_CONCEPT)}</div>`,
+  choices: function() {
     // Get last element of pre-generated order of conditions.
-    CUR_CONDITION = S_COND_ORDER.shift();
-    CUR_PROMPT = Q_COND_ORDER.shift();
-
-    CUR_QUERY = get_stimulus(
-      jsPsych.timelineVariable("verb_participle"), 
-      jsPsych.timelineVariable("object"),
-      jsPsych.timelineVariable("prep"),
-      jsPsych.timelineVariable(CUR_CONDITION),
-      PROMPT_TYPE_MAP.get(CUR_PROMPT),
-      REMINDER_MAP.get(CUR_PROMPT)
-
-    );
-    var html = `<div style="font-size:20px;"><p>${CUR_QUERY}</p></div>`;
-    return html
+    if (CONTEXT) {
+      var CHOICE_0 = get_stimulus(
+        jsPsych.timelineVariable("stimulus_0"),
+        jsPsych.timelineVariable("continuation_0"),
+        jsPsych.timelineVariable("context_0") 
+      );
+  
+      var CHOICE_1 = get_stimulus(
+        jsPsych.timelineVariable("stimulus_1"),
+        jsPsych.timelineVariable("continuation_1"),
+        jsPsych.timelineVariable("context_1") 
+      );
+    } else {
+      var CHOICE_0 = get_stimulus(
+        jsPsych.timelineVariable("stimulus_0"),
+        jsPsych.timelineVariable("continuation_0"),
+        "" 
+      );
+  
+      var CHOICE_1 = get_stimulus(
+        jsPsych.timelineVariable("stimulus_1"),
+        jsPsych.timelineVariable("continuation_1"),
+        "" 
+      );
+    }
+  
+    var CHOICES = [CHOICE_0, CHOICE_1];
+    return CHOICES
   },
-
-  require_movement: true,
-  min: 0,
-  max: 100,
-  // step: 1,
-  labels: function() {
-    return ["", `More ${PROMPT_TYPE_MAP.get(CUR_PROMPT)} &#8594`, ""]
-  },
-  slider_start: 50,
-  slider_width: 400
-};
+  prompt: ``,
+  margin_vertical: "24px",
+  data: {}
+}
 trial.on_start = function(trial){
   trial.data = jsPsych.getAllTimelineVariables();
   trial.data.task_type = "critical";
+  trial.data.concept = CURR_CONCEPT;
 };
 trial.on_finish = function(data){
   // at the end of each trial, update the progress bar
   // based on the current value and the proportion to update for each trial
   var cur_progress_bar_value = jsPsych.getProgressBarCompleted();
   jsPsych.setProgressBar(cur_progress_bar_value + (1/n_trials));
+  // For deciding whether to deploy an attention check
+  exp_trial_progress = exp_trial_progress + (1/n_exp_trials);
+
 
   // Save other variables.
-  // data.counterbalance = CUR_COUNTERBALANCE;
-  data.condition = CUR_CONDITION;
-  data.prompt = CUR_PROMPT
-  data.query = CUR_QUERY;
+  data.response_label = data.response;
+  data.provided_context = CONTEXT;
+  CURR_CHOICES = trial.choices();
 };
+
+// Define Attention Check Logic
+var optional_attention_check = {
+  type: jsPsychHtmlButtonResponse,
+  data: {},
+  stimulus: `<div style="font-size:20px;"><p>Which scenario was included in the previous question?</p></div>`,
+  choices: function() {
+    // Get last element of pre-generated order of conditions.
+    CORRECT_CHOICE = jsPsych.randomization.sampleWithReplacement(CURR_CHOICES, 1)[0]
+    if (CONTEXT) {
+      ATTN_CHOICE = get_stimulus(
+        jsPsych.timelineVariable("attn_stimulus"),
+        jsPsych.timelineVariable("attn_continuation"),
+        jsPsych.timelineVariable("attn_context") 
+      );
+    } else {
+      ATTN_CHOICE = get_stimulus(
+        jsPsych.timelineVariable("attn_stimulus"),
+        jsPsych.timelineVariable("attn_continuation"),
+        "" 
+      );
+    }
+  
+    ATTN_CHOICES = [CORRECT_CHOICE, ATTN_CHOICE];
+    ATTN_CHOICES = jsPsych.randomization.sampleWithoutReplacement(ATTN_CHOICES, 2);
+    return ATTN_CHOICES
+  }
+};
+
+optional_attention_check.on_start = function(optional_attention_check){
+  optional_attention_check.data = jsPsych.getAllTimelineVariables();
+  optional_attention_check.data.task_type = "attention_check";
+  optional_attention_check.data.response_string = ATTN_CHOICES;
+  optional_attention_check.data.correct = CORRECT_CHOICE;
+  optional_attention_check.data.attn = ATTN_CHOICE;
+};
+
+optional_attention_check.on_finish = function(data){
+  // at the end of each trial, update the progress bar
+  // based on the current value and the proportion to update for each trial
+  var cur_progress_bar_value = jsPsych.getProgressBarCompleted();
+  jsPsych.setProgressBar(cur_progress_bar_value + (1/n_trials));  
+};
+
+
+var attention_bool = {
+  timeline: [optional_attention_check],
+  conditional_function: function(){
+      if(exp_trial_progress >= ATTN_THRESHOLD){
+        // Include epsilon value to handle weird rounding errors
+        const epsilon = .0000001
+        ATTN_THRESHOLD = ATTN_THRESHOLD + ATTN_INCREMENT - epsilon ;
+        return true;
+      } else {
+        return false;
+      }
+  }
+}
 
 
 /* define test procedure */
 var test_procedure = {
-  timeline: [trial],
-  timeline_variables: test_stimuli,
-  randomize_order: false
+  timeline: [trial, attention_bool],
+  timeline_variables: combined_stimuli,
+  randomize_order: true
 };
 timeline.push(test_procedure);
 
