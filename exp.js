@@ -34,7 +34,7 @@ jsPsych.data.addProperties({
 
 var DEBUG = false; // CHANGE TO FALSE FOR REAL EXPERIMENT
 var REQUIRE_QUESTIONS = !DEBUG; 
-var STIM_COUNT = 70;
+var STIM_COUNT = 95;
 var ATTN_COUNT = 5;
 var CONTEXT = true // Change to true to include contextual info in each button
 
