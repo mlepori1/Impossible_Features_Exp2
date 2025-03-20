@@ -131,7 +131,7 @@ const REMINDER_MAP = new Map()
 REMINDER_MAP.set("improbable", 
   `<strong>Improbable</strong> means it is possible, but unlikely (e.g., "I painted the house with my hair.").`)
 REMINDER_MAP.set("impossible",
-  `<strong>Impossible</strong> means it cannot happen in our world given the laws of nature (e.g., "I painted the house with my mind."). `)
+  `<strong>Impossible</strong> means it cannot happen in our world given the laws of nature, but may happen in a fictional world (e.g., "I painted the house with my mind."). `)
 REMINDER_MAP.set("inconceivable",
   `<strong>Nonsensical</strong> means it does not make sense due to some basic conceptual error ("I painted the house with my number."). `)
 
