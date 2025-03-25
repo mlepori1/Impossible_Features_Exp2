@@ -34,14 +34,14 @@ jsPsych.data.addProperties({
 
 var DEBUG = false; // CHANGE TO FALSE FOR REAL EXPERIMENT
 var REQUIRE_QUESTIONS = !DEBUG; 
-var STIM_COUNT = 95;
+var STIM_COUNT = 20;
 var ATTN_COUNT = 5;
 var CONTEXT = true // Change to true to include contextual info in each button
 
 // Get stimuli according to list ID.
 var stimuli = test_stimuli; // test_stimuli is read from prefixes_stimuli.js
 if (DEBUG) {
-  STIM_COUNT = 15;
+  STIM_COUNT = 5;
 }
 
 // For deciding when to deploy attention checks
@@ -52,7 +52,6 @@ var ATTN_THRESHOLD = ATTN_INCREMENT;
 
 var stimuli_0 = jsPsych.randomization.sampleWithReplacement(test_stimuli, STIM_COUNT); // Select stimuli for left option
 var stimuli_1 = jsPsych.randomization.sampleWithReplacement(test_stimuli, STIM_COUNT); // Select stimuli for right option
-var attn_check_stimuli = jsPsych.randomization.sampleWithReplacement(test_stimuli, STIM_COUNT); // Select stimuli for right option
 
 // Updated every trial to give options for attn check
 var CURR_CHOICES = '';
@@ -63,61 +62,45 @@ var ATTN_CHOICES = '';
 
 var n_trials = STIM_COUNT + ATTN_COUNT; 
 
-// Conditions.
-if (CONTEXT) {
-  var CONDITIONS = [
-    "improbable", "impossible", "inconceivable"
-  ];
-} else {
-  var CONDITIONS = [
-    "probable", "improbable", "impossible", "inconceivable"
-  ];
-}
-
 var CONCEPT = [
   "improbable", "impossible", "inconceivable"
 ]
 
+// Select one axis to rate stimuli on
 var CURR_CONCEPT = jsPsych.randomization.sampleWithReplacement(CONCEPT, 1)[0];
 
-// Iterate through stimuli_0 and stimuli_1, create a new array with both stimuli and assign conditions.
-// Ensure that if the stimuli are the same, the conditions are not.
+// Iterate through stimuli_0 and stimuli_1, ensuring that there are not duplicated stimuli.
 var combined_stimuli = [];
 
 for (let i = 0; i < STIM_COUNT; i++) {
 
   s_0 = stimuli_0[i]["classification_prefix"];
   s_1 = stimuli_1[i]["classification_prefix"];
-  attn = attn_check_stimuli[i]["classification_prefix"]
 
-  if (s_0 == s_1){
-    var conditions = jsPsych.randomization.sampleWithoutReplacement(CONDITIONS, 2);
-  } else {
-    var conditions = jsPsych.randomization.sampleWithReplacement(CONDITIONS, 2);
-  }
+  while (s_0 == s_1){
+    console.log(s_1)
+    var curr_stim = jsPsych.randomization.sampleWithoutReplacement(test_stimuli, 1)[0];
+    console.log(i)
+    s_1 = curr_stim["classification_prefix"];
+    console.log(s_1)
+    stimuli_1[i] = curr_stim;
+  } 
 
-  // ensure that the attention check is always distinct from the two choices
-  var attn_condition = jsPsych.randomization.sampleWithReplacement(CONDITIONS, 1)[0];
-  while (conditions.includes(attn_condition)){
-    attn_condition = jsPsych.randomization.sampleWithReplacement(CONDITIONS, 1)[0];
-  }
+  c_0 = stimuli_0[i]["condition"]
+  c_1 = stimuli_1[i]["condition"]
 
   combined_stimuli.push(
       {
         "stimulus_0": s_0,
         "stimulus_1": s_1,
-        "attn_stimulus": attn,
-        "condition_0": conditions[0],
-        "condition_1": conditions[1],
-        "attn_condition": attn_condition,
-        "continuation_0": stimuli_0[i][conditions[0]],
-        "continuation_1": stimuli_1[i][conditions[1]],
-        "attn_continuation": attn_check_stimuli[i][attn_condition],
+        "condition_0": c_0,
+        "condition_1": c_1,
+        "continuation_0": stimuli_0[i][c_0],
+        "continuation_1": stimuli_1[i][c_1],
         "id_0": stimuli_0[i]["item_id"],
         "id_1": stimuli_1[i]["item_id"],
         "context_0": stimuli_0[i]["context"],
         "context_1": stimuli_1[i]["context"],
-        "attn_context": attn_check_stimuli[i]["context"],
       }
     )
 }
@@ -140,7 +123,6 @@ REMINDER_MAP.set("inconceivable",
 **************************************************************************/
 
 function capitalizeFirstLetter(string) {
-  console.log(string);
   return string[0].toUpperCase() + string.slice(1);
 }
 
@@ -255,25 +237,9 @@ trial.on_finish = function(data){
 var optional_attention_check = {
   type: jsPsychHtmlButtonResponse,
   data: {},
-  stimulus: `<div style="font-size:20px;"><p>Which scenario was included in the previous question?</p></div>`,
+  stimulus: `<div style="font-size:20px;"><p>Follow the instructions below.</p></div>`,
   choices: function() {
-    // Get last element of pre-generated order of conditions.
-    CORRECT_CHOICE = jsPsych.randomization.sampleWithReplacement(CURR_CHOICES, 1)[0]
-    if (CONTEXT) {
-      ATTN_CHOICE = get_stimulus(
-        jsPsych.timelineVariable("attn_stimulus"),
-        jsPsych.timelineVariable("attn_continuation"),
-        jsPsych.timelineVariable("attn_context") 
-      );
-    } else {
-      ATTN_CHOICE = get_stimulus(
-        jsPsych.timelineVariable("attn_stimulus"),
-        jsPsych.timelineVariable("attn_continuation"),
-        "" 
-      );
-    }
-  
-    ATTN_CHOICES = [CORRECT_CHOICE, ATTN_CHOICE];
+    ATTN_CHOICES = ["Click This Button!", "Don't Click This Button!"];
     ATTN_CHOICES = jsPsych.randomization.sampleWithoutReplacement(ATTN_CHOICES, 2);
     return ATTN_CHOICES
   }
@@ -282,9 +248,7 @@ var optional_attention_check = {
 optional_attention_check.on_start = function(optional_attention_check){
   optional_attention_check.data = jsPsych.getAllTimelineVariables();
   optional_attention_check.data.task_type = "attention_check";
-  optional_attention_check.data.response_string = ATTN_CHOICES;
-  optional_attention_check.data.correct = CORRECT_CHOICE;
-  optional_attention_check.data.attn = ATTN_CHOICE;
+  optional_attention_check.data.choices = ATTN_CHOICES;
 };
 
 optional_attention_check.on_finish = function(data){
