@@ -68,8 +68,8 @@ function capitalizeFirstLetter(string) {
 }
 function get_stimulus(prefix, continuation) {
 
-  var q = "How hard is it to visualize the following scenario?<BR/><BR/>"
-  var s = q + capitalizeFirstLetter(prefix) + " " + continuation
+  var q = "How hard is it to visualize the following scenario, or to form an image of the scenario in your mind?<BR/><BR/>"
+  var s = q + "Someone " + prefix + " " + continuation
   s = s.replace("[POSS]", "their")
   return s
 }
@@ -105,7 +105,7 @@ var instructions = {
     <h2>Hello, and welcome to our study!</h2>
     In this study, we will ask you ${n_trials} simple questions.
     <br><br>
-    The questions are all about how hard it is to visualize certain scenarios.
+    These questions are all about how <strong>hard it is to visualize a scenario, or to form an image of the scenario in your mind.</strong>
     <br>
     <h3>Your task:</h3>
     <ul>
@@ -116,9 +116,10 @@ var instructions = {
     </ul>
     <h3>IMPORTANT:</h3>
     <ul>
-      <li>Some questions might sound weird or nonsensical. Just answer the best you can.</li>
+      <li>Some questions might sound weird or nonsensical. Just answer the best you can, according to whether you
+      can form an image of the scenario in your mind, <strong> not </strong> according to whether the scenario can happen
+      in the real world.</li>
       <li>There are no right or wrong answers. We are simply interested in your intuitions.</li>
-      <li>Remember to respond quickly!</li>
     </ul>
     <br>
     Once you are ready, click the button below to begin the experiment.
@@ -149,7 +150,7 @@ var trial = {
   min: 0,
   max: 100,
   // step: 1,
-  labels: ["Extremely easy to visualize", "Extremely hard to visualize"],
+  labels: ["Extremely <strong>easy</strong> to visualize", "Extremely <strong>hard</strong> to visualize"],
   slider_start: 50,
   slider_width: 300
 };
