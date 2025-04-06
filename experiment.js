@@ -40,7 +40,6 @@ var CONTEXT = true // Change to true to include contextual info in each button
 // Get stimuli according to list ID.
 var stimuli = test_stimuli; // test_stimuli is read from prefixes_stimuli.js
 var STIM_COUNT = stimuli.length;
-console.log(STIM_COUNT)
 
 if (DEBUG) {
   STIM_COUNT = 5;
@@ -97,7 +96,6 @@ for (let i = 0; i < STIM_COUNT; i++) {
     )
 }
 
-console.log(combined_stimuli)
 const PROMPT_TYPE_MAP = new Map() 
 PROMPT_TYPE_MAP.set("improbable", "improbable")
 PROMPT_TYPE_MAP.set("impossible", "impossible")
