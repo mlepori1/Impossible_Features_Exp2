@@ -34,12 +34,14 @@ jsPsych.data.addProperties({
 
 var DEBUG = false; // CHANGE TO FALSE FOR REAL EXPERIMENT
 var REQUIRE_QUESTIONS = !DEBUG; 
-var STIM_COUNT = 20;
 var ATTN_COUNT = 5;
 var CONTEXT = true // Change to true to include contextual info in each button
 
 // Get stimuli according to list ID.
 var stimuli = test_stimuli; // test_stimuli is read from prefixes_stimuli.js
+var STIM_COUNT = stimuli.length;
+console.log(STIM_COUNT)
+
 if (DEBUG) {
   STIM_COUNT = 5;
 }
@@ -50,8 +52,7 @@ var exp_trial_progress = 0.0;
 var ATTN_INCREMENT = 1 / ATTN_COUNT;
 var ATTN_THRESHOLD = ATTN_INCREMENT;
 
-var stimuli_0 = jsPsych.randomization.sampleWithReplacement(test_stimuli, STIM_COUNT); // Select stimuli for left option
-var stimuli_1 = jsPsych.randomization.sampleWithReplacement(test_stimuli, STIM_COUNT); // Select stimuli for right option
+var test_stimuli = jsPsych.randomization.sampleWithoutReplacement(test_stimuli, STIM_COUNT); 
 
 // Updated every trial to give options for attn check
 var CURR_CHOICES = '';
@@ -74,20 +75,11 @@ var combined_stimuli = [];
 
 for (let i = 0; i < STIM_COUNT; i++) {
 
-  s_0 = stimuli_0[i]["classification_prefix"];
-  s_1 = stimuli_1[i]["classification_prefix"];
+  s_0 = test_stimuli[i]["stim_0"]["classification_prefix"];
+  s_1 = test_stimuli[i]["stim_1"]["classification_prefix"];
 
-  while (s_0 == s_1){
-    console.log(s_1)
-    var curr_stim = jsPsych.randomization.sampleWithoutReplacement(test_stimuli, 1)[0];
-    console.log(i)
-    s_1 = curr_stim["classification_prefix"];
-    console.log(s_1)
-    stimuli_1[i] = curr_stim;
-  } 
-
-  c_0 = stimuli_0[i]["condition"]
-  c_1 = stimuli_1[i]["condition"]
+  c_0 = test_stimuli[i]["stim_0"]["condition"]
+  c_1 = test_stimuli[i]["stim_1"]["condition"]
 
   combined_stimuli.push(
       {
@@ -95,16 +87,17 @@ for (let i = 0; i < STIM_COUNT; i++) {
         "stimulus_1": s_1,
         "condition_0": c_0,
         "condition_1": c_1,
-        "continuation_0": stimuli_0[i][c_0],
-        "continuation_1": stimuli_1[i][c_1],
-        "id_0": stimuli_0[i]["item_id"],
-        "id_1": stimuli_1[i]["item_id"],
-        "context_0": stimuli_0[i]["context"],
-        "context_1": stimuli_1[i]["context"],
+        "continuation_0": test_stimuli[i]["stim_0"][c_0],
+        "continuation_1": test_stimuli[i]["stim_1"][c_1],
+        "id_0": test_stimuli[i]["stim_0"]["item_id"],
+        "id_1": test_stimuli[i]["stim_1"]["item_id"],
+        "context_0": test_stimuli[i]["stim_0"]["context"],
+        "context_1": test_stimuli[i]["stim_1"]["context"],
       }
     )
 }
 
+console.log(combined_stimuli)
 const PROMPT_TYPE_MAP = new Map() 
 PROMPT_TYPE_MAP.set("improbable", "improbable")
 PROMPT_TYPE_MAP.set("impossible", "impossible")
@@ -207,6 +200,7 @@ var trial = {
     }
   
     var CHOICES = [CHOICE_0, CHOICE_1];
+    CHOICES = jsPsych.randomization.sampleWithoutReplacement(CHOICES, 2)
     return CHOICES
   },
   prompt: ``,
