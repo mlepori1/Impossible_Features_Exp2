@@ -82,6 +82,7 @@ for (let i = 0; i < STIM_COUNT; i++) {
 
   combined_stimuli.push(
       {
+        "pair_idx": test_stimuli[i]["pair_idx"],
         "stimulus_0": s_0,
         "stimulus_1": s_1,
         "condition_0": c_0,
@@ -197,9 +198,9 @@ var trial = {
       );
     }
   
-    var CHOICES = [CHOICE_0, CHOICE_1];
-    CHOICES = jsPsych.randomization.sampleWithoutReplacement(CHOICES, 2)
-    return CHOICES
+    CHOICES = [CHOICE_0, CHOICE_1];
+    CURR_CHOICES = jsPsych.randomization.sampleWithoutReplacement(CHOICES, 2)
+    return CURR_CHOICES
   },
   prompt: ``,
   margin_vertical: "24px",
@@ -220,9 +221,8 @@ trial.on_finish = function(data){
 
 
   // Save other variables.
-  data.response_label = data.response;
   data.provided_context = CONTEXT;
-  CURR_CHOICES = trial.choices();
+  data.choices = CURR_CHOICES;
 };
 
 // Define Attention Check Logic

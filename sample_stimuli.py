@@ -11,6 +11,7 @@ random.shuffle(data)
 random.shuffle(conditions)
 
 new_data = []
+curr_idx = 0
 
 for cond_tuple_idx in range(len(conditions)):
     for i in range(N):
@@ -24,8 +25,10 @@ for cond_tuple_idx in range(len(conditions)):
         data[data_idx_1]["condition"] = conditions[cond_tuple_idx][1]
 
         new_data.append({
+            "pair_idx": curr_idx,
             "stim_0": data[data_idx_0],
             "stim_1": data[data_idx_1]
         })
+        curr_idx += 1
 
 json.dump(new_data, open("./consistency.json", "w"), indent=4)
